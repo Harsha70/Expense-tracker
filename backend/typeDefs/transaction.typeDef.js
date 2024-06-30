@@ -13,6 +13,7 @@ type Transaction {
 type Query {
     transactions: [Transaction!]
     transaction(transactionId:ID!): Transaction
+    # todo=>add categorystatistics query
 }
 
 type Mutation{
