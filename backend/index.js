@@ -60,9 +60,9 @@ const server = new ApolloServer({
 await server.start();
 
 app.use(
-  "/",
+  "/graphql",
   cors({
-    origin: "https://localhost:3000",
+    origin: "http://localhost:3000",
     credentials: true,
   }),
   express.json(),
@@ -76,4 +76,4 @@ app.use(
 // Modified server startup
 await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
 await connectDB();
-// console.log(`🚀 Server ready at ${url}`);
+console.log(`🚀 Server ready at http://localhost:4000/graphql`);
