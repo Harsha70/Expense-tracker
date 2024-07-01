@@ -17,6 +17,7 @@ const SignUpPage = () => {
   const [signup, { loading, error }] = useMutation(SIGN_UP, {
     refeatchQueries: ["GetAuthenticatedUser"],
   });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("signUpData", signUpData);

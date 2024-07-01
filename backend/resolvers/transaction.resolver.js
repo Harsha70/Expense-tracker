@@ -13,9 +13,10 @@ const transactionResolver = {
         throw new Error("Error getting transactions");
       }
     },
-    transaction: async (_, { transationId }) => {
+    transaction: async (_, { transactionId }) => {
       try {
-        const transaction = await Transaction.findById(transationId);
+        console.log("Transaction", transactionId);
+        const transaction = await Transaction.findById(transactionId);
         return transaction;
       } catch (error) {
         console.error("Error getting transaction: ", error);
@@ -40,21 +41,24 @@ const transactionResolver = {
     },
     updateTransaction: async (_, { input }) => {
       try {
+        console.log("UpdateTransaction", input);
         const updateTransaction = await Transaction.findByIdAndUpdate(
-          input.transationId,
+          input.transactionId,
           input,
           { new: true }
         );
+        console.log("UpdateTransaction", input, updateTransaction);
         return updateTransaction;
       } catch (err) {
         console.error("Error updating transaction: ", err);
         throw new Error("Error updating transaction");
       }
     },
-    deleteTransaction: async (_, { transationId }) => {
+    deleteTransaction: async (_, { transactionId }) => {
       try {
+        console.log("Deleting transaction", transactionId);
         const deleteTransaction = await Transaction.findByIdAndDelete(
-          transationId
+          transactionId
         );
         return deleteTransaction;
       } catch (err) {
