@@ -12,10 +12,10 @@ const LoginPage = () => {
   });
 
   const [login, { loading, error }] = useMutation(LOGIN, {
-    refeatchQueries: ["GetAuthenticatedUser"],
+    refetchQueries: ["GetAuthenticatedUser"],
   });
 
-  console.log("error------->", error?.message);
+  // console.log("error------->", error?.message);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -15,7 +15,7 @@ const SignUpPage = () => {
   });
 
   const [signup, { loading, error }] = useMutation(SIGN_UP, {
-    refeatchQueries: ["GetAuthenticatedUser"],
+    refetchQueries: ["GetAuthenticatedUser"],
   });
 
   const handleSubmit = async (e) => {

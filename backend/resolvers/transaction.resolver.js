@@ -1,4 +1,5 @@
 import Transaction from "../models/transaction.model.js";
+import User from "../models/user.model.js";
 
 const transactionResolver = {
   Query: {
@@ -24,6 +25,24 @@ const transactionResolver = {
       }
     },
     // todo => add category statistics queries
+    categoryStatistics: async (_, __, context) => {
+      if (!context.getUser()) throw new Error("unauthorized");
+
+      const userId = context.getUser()._id;
+      const transactions = await Transaction.find({ userId: userId });
+      const categoryMap = {};
+      transactions.forEach((transaction) => {
+        if (!categoryMap[transaction.category]) {
+          categoryMap[transaction.category] = 0;
+        }
+        categoryMap[transaction.category] += transaction.amount;
+      });
+      console.log("TransactionStatistics", categoryMap);
+      return Object.entries(categoryMap).map(([category, totalAmount]) => ({
+        category,
+        totalAmount,
+      }));
+    },
   },
   Mutation: {
     createTransaction: async (_, { input }, context) => {
@@ -68,6 +87,18 @@ const transactionResolver = {
     },
   },
   // todo => add transation/user relationship
+  Transaction: {
+    user: async (parent, _) => {
+      const userId = parent.userId;
+      try {
+        const user = await User.findById(userId);
+        return user;
+      } catch (err) {
+        console.error("Error getting user: ", err);
+        throw new Error("Error getting user");
+      }
+    },
+  },
 };
 
 export default transactionResolver;

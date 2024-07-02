@@ -13,9 +13,9 @@ function App() {
   // const authUser = true;
   const { loading, data, error } = useQuery(GET_AUTHENTICATED_USER);
 
-  console.log("loading...", loading);
+  // console.log("loading...", loading);
   console.log("Authenticated user", data);
-  console.log("Error", error);
+  // console.log("Error", error);
   return (
     <>
       {data?.authUser && <Header />}
