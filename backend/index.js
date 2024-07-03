@@ -25,6 +25,8 @@ import { configurePassport } from "./passport/passport.config.js";
 dotenv.config();
 configurePassport();
 
+const __dirname = path.resolve();
+console.log("__dirname=" + __dirname);
 const app = express();
 const httpServer = http.createServer(app);
 
@@ -73,6 +75,12 @@ app.use(
   })
 );
 
+// npm run build
+app.use(express.static(path.join(__dirname, "frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/dist", "index.html"));
+});
 // Modified server startup
 await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
 await connectDB();

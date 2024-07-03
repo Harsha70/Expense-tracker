@@ -90,7 +90,6 @@ const userResolver = {
       }
     },
   },
-  // todo=> add user/transaction relation
   User: {
     transactions: async (parent, _, context) => {
       try {

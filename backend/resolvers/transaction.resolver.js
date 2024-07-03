@@ -24,7 +24,6 @@ const transactionResolver = {
         throw new Error("Error getting transaction");
       }
     },
-    // todo => add category statistics queries
     categoryStatistics: async (_, __, context) => {
       if (!context.getUser()) throw new Error("unauthorized");
 
@@ -86,7 +85,6 @@ const transactionResolver = {
       }
     },
   },
-  // todo => add transation/user relationship
   Transaction: {
     user: async (parent, _) => {
       const userId = parent.userId;
