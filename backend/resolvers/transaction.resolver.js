@@ -42,6 +42,28 @@ const transactionResolver = {
         totalAmount,
       }));
     },
+    locationStatistics: async (_, __, context) => {
+      try {
+        if (!context.getUser()) throw new Error("unauthorized");
+
+        const userId = context.getUser()._id;
+        const transactions = await Transaction.find({ userId: userId });
+        const locationMap = {};
+        transactions.forEach((transaction) => {
+          if (!locationMap[transaction.location]) {
+            locationMap[transaction.location] = 0;
+          }
+          locationMap[transaction.location] += transaction.amount;
+        });
+        console.log("locationMapStatistics", locationMap);
+        return Object.entries(locationMap).map(([location, totalAmount]) => ({
+          location,
+          totalAmount,
+        }));
+      } catch (err) {
+        console.log("Error getting location");
+      }
+    },
   },
   Mutation: {
     createTransaction: async (_, { input }, context) => {

@@ -39,5 +39,9 @@ export const GET_TRANSACTION_STATISTICS = gql`
       category
       totalAmount
     }
+    locationStatistics {
+      location
+      totalAmount
+    }
   }
 `;

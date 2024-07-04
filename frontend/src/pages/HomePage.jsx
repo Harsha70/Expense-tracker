@@ -14,9 +14,10 @@ import { useEffect, useState } from "react";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const HomePage = () => {
+  const [chartSelect, setChartSelect] = useState("category");
   const { data } = useQuery(GET_TRANSACTION_STATISTICS);
   const { data: authUserData } = useQuery(GET_AUTHENTICATED_USER);
-  // console.log(authUserData);
+  console.log("data-------->", data);
   const [logout, { loading, client, error }] = useMutation(LOGOUT);
 
   const [chartData, setChartData] = useState({
@@ -36,7 +37,7 @@ const HomePage = () => {
   });
 
   useEffect(() => {
-    if (data?.categoryStatistics) {
+    if (chartSelect === "category" && data?.categoryStatistics) {
       // console.log(data);
       const categories = data.categoryStatistics.map((stat) => stat.category);
       const totalAmount = data.categoryStatistics.map(
@@ -69,7 +70,49 @@ const HomePage = () => {
         ],
       }));
     }
-  }, [data]);
+    if (chartSelect === "location" && data?.locationStatistics) {
+      // console.log(data);
+      const locations = data.locationStatistics.map((stat) => stat.location);
+      const totalAmount = data.locationStatistics.map(
+        (stat) => stat.totalAmount
+      );
+      const backgroundColors = [];
+      const borderColors = [];
+      function getRandomColor() {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        const backgroundAlpha = 0.4; // Adjust the alpha value for background color
+        const borderAlpha = 1; // Alpha value for border color
+
+        return {
+          background: `rgba(${r},${g},${b},${backgroundAlpha})`,
+          border: `rgba(${r},${g},${b},${borderAlpha})`,
+        };
+      }
+      const colorMapping = {};
+      locations.forEach((location) => {
+        if (!colorMapping[location]) {
+          colorMapping[location] = getRandomColor();
+        }
+        const colors = colorMapping[location];
+        backgroundColors.push(colors.background);
+        borderColors.push(colors.border);
+      });
+
+      setChartData((prev) => ({
+        labels: locations,
+        datasets: [
+          {
+            ...prev.datasets[0],
+            data: totalAmount,
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
+          },
+        ],
+      }));
+    }
+  }, [data, chartSelect]);
 
   console.log("categoryStatistics", chartData);
 
@@ -108,12 +151,39 @@ const HomePage = () => {
             <div className="w-6 h-6 border-t-2 border-b-2 mx-2 rounded-full animate-spin"></div>
           )}
         </div>
+        <div className="flex justify-center gap-5">
+          <button
+            className={`category ${
+              chartSelect === "category" &&
+              "bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 active:bg-blue-800"
+            }`}
+            onClick={() => setChartSelect("category")}
+          >
+            Category
+          </button>
+          <button
+            className={`${
+              chartSelect === "location" &&
+              "bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 active:bg-blue-800"
+            }`}
+            onClick={() => setChartSelect("location")}
+          >
+            Location
+          </button>
+        </div>
         <div className="flex flex-wrap w-full justify-center items-center gap-6">
-          {data?.categoryStatistics.length > 0 && (
-            <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]  ">
-              <Doughnut data={chartData} />
-            </div>
-          )}
+          {chartSelect === "category" &&
+            data?.categoryStatistics.length > 0 && (
+              <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]  ">
+                <Doughnut data={chartData} />
+              </div>
+            )}
+          {chartSelect === "location" &&
+            data?.locationStatistics.length > 0 && (
+              <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]  ">
+                <Doughnut data={chartData} />
+              </div>
+            )}
 
           <TransactionForm />
         </div>
