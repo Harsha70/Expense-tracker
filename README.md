@@ -1,3 +1,5 @@
+https://expense-tracker-ogbq.onrender.com/
+
 ## create a .env file and past the following details 
 - MONGO_URI=""
 - SESSION_SECRET=""
